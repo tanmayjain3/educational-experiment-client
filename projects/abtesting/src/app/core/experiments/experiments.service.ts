@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable, combineLatest } from 'rxjs';
-import { Experiment, UpsertExperimentType, ExperimentVM, ExperimentStateInfo, EXPERIMENT_SEARCH_KEY, EXPERIMENT_SORT_KEY, EXPERIMENT_SORT_AS } from './store/experiments.model';
+import {
+  Experiment,
+  UpsertExperimentType,
+  ExperimentVM,
+  ExperimentStateInfo,
+  EXPERIMENT_SEARCH_KEY,
+  EXPERIMENT_SORT_KEY,
+  EXPERIMENT_SORT_AS
+} from './store/experiments.model';
 import { Store, select } from '@ngrx/store';
 import {
   selectAllExperiment,
@@ -8,11 +16,13 @@ import {
   selectSelectedExperiment,
   selectAllPartitions,
   selectAllExperimentNames,
-  selectExperimentById
+  selectExperimentById,
+  selectSearchString,
+  selectSearchKey
 } from './store/experiments.selectors';
 import * as experimentAction from './store//experiments.actions';
 import { AppState } from '../core.state';
-import { map } from 'rxjs/operators';
+import { map, first, filter } from 'rxjs/operators';
 
 @Injectable()
 export class ExperimentService {
@@ -32,16 +42,23 @@ export class ExperimentService {
   selectedExperiment$ = this.store$.pipe(select(selectSelectedExperiment));
   allPartitions$ = this.store$.pipe(select(selectAllPartitions));
   allExperimentNames$ = this.store$.pipe(select(selectAllExperimentNames));
+  selectSearchString$ = this.store$.pipe(select(selectSearchString));
+  selectSearchKey$ = this.store$.pipe(select(selectSearchKey));
+
+  selectSearchExperimentParams(): Observable<Object> {
+    return combineLatest(this.selectSearchKey$, this.selectSearchString$).pipe(
+      filter(([searchKey, searchString]) => !!searchKey && !!searchString),
+      map(([searchKey, searchString]) => ({ searchKey, searchString })),
+      first()
+    );
+  }
 
   isInitialExperimentsLoading() {
-    return combineLatest(
-      this.store$.pipe(select(selectIsLoadingExperiment)),
-      this.experiments$
-    ).pipe(
+    return combineLatest(this.store$.pipe(select(selectIsLoadingExperiment)), this.experiments$).pipe(
       map(([isLoading, experiments]) => {
-        return !isLoading || experiments.length
+        return !isLoading || experiments.length;
       })
-    )
+    );
   }
 
   loadExperiments(fromStarting?: boolean) {
@@ -66,15 +83,13 @@ export class ExperimentService {
   }
 
   selectExperimentById(experimentId: string) {
-    return combineLatest(
-      this.store$.pipe(select(selectExperimentById, { experimentId }))
-    ).pipe(
+    return combineLatest(this.store$.pipe(select(selectExperimentById, { experimentId }))).pipe(
       map(([experiment]) => {
         if (!experiment) {
           this.fetchExperimentById(experimentId);
         }
         return experiment;
-      }),
+      })
     );
   }
 

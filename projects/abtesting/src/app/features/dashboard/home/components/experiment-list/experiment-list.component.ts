@@ -1,14 +1,11 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  OnDestroy,
-  ElementRef,
-  AfterViewInit
-} from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { Experiment, EXPERIMENT_STATE, EXPERIMENT_SEARCH_KEY } from '../../../../../core/experiments/store/experiments.model';
+import {
+  Experiment,
+  EXPERIMENT_STATE,
+  EXPERIMENT_SEARCH_KEY
+} from '../../../../../core/experiments/store/experiments.model';
 import { ExperimentService } from '../../../../../core/experiments/experiments.service';
 import { Subscription, fromEvent, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material';
@@ -25,15 +22,7 @@ import { AuthService } from '../../../../../core/auth/auth.service';
 })
 export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit {
   permissions$: Observable<UserPermission>;
-  displayedColumns: string[] = [
-    'name',
-    'state',
-    'postExperimentRule',
-    'createdAt',
-    'context',
-    'enrollment',
-    'view'
-  ];
+  displayedColumns: string[] = ['name', 'state', 'postExperimentRule', 'createdAt', 'context', 'enrollment', 'view'];
   allExperiments: MatTableDataSource<Experiment>;
   allExperimentsSub: Subscription;
   experimentFilterOptions = [
@@ -56,18 +45,23 @@ export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit
     private experimentService: ExperimentService,
     private dialog: MatDialog,
     private authService: AuthService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.permissions$ = this.authService.userPermissions$;
-    this.allExperimentsSub = this.experimentService.experiments$.subscribe(
-      allExperiments => {
-        this.allExperiments = new MatTableDataSource();
-        this.allExperiments.data = [ ...allExperiments];
-        this.allExperiments.sort = this.sort;
-        this.applyFilter(this.searchValue);
-      }
-    );
+    this.allExperimentsSub = this.experimentService.experiments$.subscribe(allExperiments => {
+      this.allExperiments = new MatTableDataSource();
+      this.allExperiments.data = [...allExperiments];
+      this.allExperiments.sort = this.sort;
+      this.applyFilter(this.searchValue);
+    });
+
+    this.experimentService.selectSearchExperimentParams().subscribe((searchParams: any) => {
+      // Used when user clicks on context or tags from view experiment page
+      this.searchValue = searchParams.searchString;
+      this.selectedExperimentFilterOption = searchParams.searchKey;
+      this.applyFilter(searchParams.searchString);
+    });
   }
 
   // Modify angular material's table's default search behavior
@@ -78,25 +72,18 @@ export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit
           return (
             data.name.toLocaleLowerCase().includes(filter) ||
             data.state.toLocaleLowerCase().includes(filter) ||
-            !!data.tags.filter(tags =>
-              tags.toLocaleLowerCase().includes(filter)
-            ).length || this.isPartitionFound(data, filter) ||
-            !!data.context.filter(context =>
-              context.toLocaleLowerCase().includes(filter)
-            ).length
+            !!data.tags.filter(tags => tags.toLocaleLowerCase().includes(filter)).length ||
+            this.isPartitionFound(data, filter) ||
+            !!data.context.filter(context => context.toLocaleLowerCase().includes(filter)).length
           );
         case EXPERIMENT_SEARCH_KEY.NAME:
           return data.name.toLowerCase().includes(filter) || this.isPartitionFound(data, filter);
         case EXPERIMENT_SEARCH_KEY.STATUS:
           return data.state.toLowerCase().includes(filter);
         case EXPERIMENT_SEARCH_KEY.TAG:
-          return !!data.tags.filter(tags =>
-            tags.toLocaleLowerCase().includes(filter)
-          ).length;
+          return !!data.tags.filter(tags => tags.toLocaleLowerCase().includes(filter)).length;
         case EXPERIMENT_SEARCH_KEY.CONTEXT:
-          return !!data.context.filter(context =>
-            context.toLocaleLowerCase().includes(filter)
-          ).length;
+          return !!data.context.filter(context => context.toLocaleLowerCase().includes(filter)).length;
       }
     };
   }
@@ -104,7 +91,9 @@ export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit
   // Used to search based on partition point and name
   isPartitionFound(data: Experiment, filterValue: string): boolean {
     const isPartitionFound = data.partitions.filter(
-      partition => (partition.expId ? partition.expId.toLocaleLowerCase().includes(filterValue) : false) || partition.expPoint.toLocaleLowerCase().includes(filterValue)
+      partition =>
+        (partition.expId ? partition.expId.toLocaleLowerCase().includes(filterValue) : false) ||
+        partition.expPoint.toLocaleLowerCase().includes(filterValue)
     );
     return !!isPartitionFound.length;
   }
@@ -154,9 +143,7 @@ export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   setContextVisible(experimentId: string) {
-    const index = this.contextVisibility.findIndex(
-      data => data.experimentId === experimentId
-    );
+    const index = this.contextVisibility.findIndex(data => data.experimentId === experimentId);
     if (index !== -1) {
       this.contextVisibility[index] = { experimentId, visibility: true };
     } else {
@@ -171,22 +158,22 @@ export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit
 
   // Used to check whether context are visible for particular experiment or not
   isAllContextVisible(experimentId: string): boolean {
-    const index = this.contextVisibility.findIndex(
-      data => data.experimentId === experimentId
-    );
+    const index = this.contextVisibility.findIndex(data => data.experimentId === experimentId);
     return index !== -1 ? this.contextVisibility[index].visibility : false;
   }
 
   getConditionCode(conditionId: string, experimentId: string) {
     const experimentFound = this.allExperiments.data.find(experiment => experiment.id === experimentId);
-    return !!experimentFound ? '(' + experimentFound.conditions.find(condition => condition.id === conditionId).conditionCode + ')' : '';
+    return !!experimentFound
+      ? '(' + experimentFound.conditions.find(condition => condition.id === conditionId).conditionCode + ')'
+      : '';
   }
 
   ngOnDestroy() {
     this.allExperimentsSub.unsubscribe();
     // TODO: should implement persist search
-    this.experimentService.setSearchKey(EXPERIMENT_SEARCH_KEY.ALL);
     this.experimentService.setSearchString(null);
+    this.experimentService.setSearchKey(EXPERIMENT_SEARCH_KEY.ALL);
     this.experimentService.setSortKey(null);
     this.experimentService.setSortingType(null);
   }
@@ -194,20 +181,24 @@ export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit
   ngAfterViewInit() {
     // subtract other component's height
     const windowHeight = window.innerHeight;
-    this.experimentTableContainer.nativeElement.style.maxHeight = (windowHeight - 350) + 'px';
-    fromEvent(this.experimentTableContainer.nativeElement, 'scroll').pipe(debounceTime(500)).subscribe(value => {
-      const height = this.experimentTableContainer.nativeElement.clientHeight;
-      const scrollHeight = this.experimentTableContainer.nativeElement.scrollHeight - height;
-      const scrollTop = this.experimentTableContainer.nativeElement.scrollTop;
-      const percent = Math.floor(scrollTop / scrollHeight * 100);
-      if (percent > 80) {
-        this.experimentService.loadExperiments();
-      }
-    });
+    this.experimentTableContainer.nativeElement.style.maxHeight = windowHeight - 350 + 'px';
+    fromEvent(this.experimentTableContainer.nativeElement, 'scroll')
+      .pipe(debounceTime(500))
+      .subscribe(value => {
+        const height = this.experimentTableContainer.nativeElement.clientHeight;
+        const scrollHeight = this.experimentTableContainer.nativeElement.scrollHeight - height;
+        const scrollTop = this.experimentTableContainer.nativeElement.scrollTop;
+        const percent = Math.floor((scrollTop / scrollHeight) * 100);
+        if (percent > 80) {
+          this.experimentService.loadExperiments();
+        }
+      });
 
-    fromEvent(this.searchInput.nativeElement, 'keyup').pipe(debounceTime(500)).subscribe(searchInput => {
-      this.setSearchString((searchInput as any).target.value);
-    });
+    fromEvent(this.searchInput.nativeElement, 'keyup')
+      .pipe(debounceTime(500))
+      .subscribe(searchInput => {
+        this.setSearchString((searchInput as any).target.value);
+      });
   }
 
   get ExperimentStatePipeTypes() {
