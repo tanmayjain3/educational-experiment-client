@@ -22,7 +22,7 @@ import { AuthService } from '../../../../../core/auth/auth.service';
 })
 export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit {
   permissions$: Observable<UserPermission>;
-  displayedColumns: string[] = ['name', 'state', 'postExperimentRule', 'createdAt', 'context', 'enrollment', 'view'];
+  displayedColumns: string[] = ['name', 'state', 'postExperimentRule', 'createdAt', 'context', 'tags', 'enrollment'];
   allExperiments: MatTableDataSource<Experiment>;
   allExperimentsSub: Subscription;
   experimentFilterOptions = [
@@ -35,6 +35,7 @@ export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit
   selectedExperimentFilterOption = EXPERIMENT_SEARCH_KEY.ALL;
   searchValue: string;
   contextVisibility = [];
+  tagsVisibility = [];
   isLoadingExperiment$ = this.experimentService.isLoadingExperiment$;
   @ViewChild('tableContainer', { static: false }) experimentTableContainer: ElementRef;
   @ViewChild('searchInput', { static: false }) searchInput: ElementRef;
@@ -124,9 +125,9 @@ export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit
     this.experimentService.loadExperiments(true);
   }
 
-  filterExperimentByContext(tagValue: string) {
+  filterExperimentByChips(tagValue: string, type: EXPERIMENT_SEARCH_KEY) {
     this.searchValue = tagValue;
-    this.selectedExperimentFilterOption = EXPERIMENT_SEARCH_KEY.CONTEXT;
+    this.selectedExperimentFilterOption = type;
     this.applyFilter(tagValue);
     this.setSearchKey();
     this.setSearchString(this.searchValue);
@@ -142,24 +143,24 @@ export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit
     });
   }
 
-  setContextVisible(experimentId: string) {
-    const index = this.contextVisibility.findIndex(data => data.experimentId === experimentId);
+  setChipsVisible(experimentId: string, type: string) {
+    const index = this[type].findIndex(data => data.experimentId === experimentId);
     if (index !== -1) {
-      this.contextVisibility[index] = { experimentId, visibility: true };
+      this[type][index] = { experimentId, visibility: true };
     } else {
-      this.contextVisibility.push({ experimentId, visibility: true });
+      this[type].push({ experimentId, visibility: true });
     }
-    this.contextVisibility.forEach((data, tagIndex) => {
+    this[type].forEach((data, tagIndex) => {
       if (data.experimentId !== experimentId) {
-        this.contextVisibility[tagIndex] = { ...data, visibility: false };
+        this[type][tagIndex] = { ...data, visibility: false };
       }
     });
   }
 
-  // Used to check whether context are visible for particular experiment or not
-  isAllContextVisible(experimentId: string): boolean {
-    const index = this.contextVisibility.findIndex(data => data.experimentId === experimentId);
-    return index !== -1 ? this.contextVisibility[index].visibility : false;
+  // Used to check whether context or tags are visible for particular experiment or not
+  isAllChipsVisible(experimentId: string, type: string): boolean {
+    const index = this[type].findIndex(data => data.experimentId === experimentId);
+    return index !== -1 ? this[type][index].visibility : false;
   }
 
   getConditionCode(conditionId: string, experimentId: string) {
@@ -207,5 +208,9 @@ export class ExperimentListComponent implements OnInit, OnDestroy, AfterViewInit
 
   get ExperimentState() {
     return EXPERIMENT_STATE;
+  }
+
+  get ExperimentSearchKey() {
+    return EXPERIMENT_SEARCH_KEY;
   }
 }
