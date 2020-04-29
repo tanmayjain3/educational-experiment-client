@@ -122,4 +122,8 @@ export class ExperimentService {
   fetchAllExperimentNames() {
     this.store$.dispatch(experimentAction.actionFetchAllExperimentNames());
   }
+
+  exportExperimentInfo(experimentId: string, experimentName: string) {
+    this.store$.dispatch(experimentAction.actionExportExperimentInfo({ experimentId, experimentName }));
+  }
 }
