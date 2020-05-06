@@ -1,6 +1,9 @@
 import { Component, Input, OnChanges, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
 import { ASSIGNMENT_UNIT } from 'upgrade_types';
-import { ExperimentVM, ExperimentGraphDateFilterOptions } from '../../../../../core/experiments/store/experiments.model';
+import {
+  ExperimentVM,
+  ExperimentGraphDateFilterOptions
+} from '../../../../../core/experiments/store/experiments.model';
 import { ExperimentService } from '../../../../../core/experiments/experiments.service';
 import { filter } from 'rxjs/operators';
 import * as intersectionby from 'lodash.intersectionby';
@@ -21,7 +24,7 @@ const INDIVIDUAL = 'Individual';
 @Component({
   selector: 'home-enrollment-over-time',
   templateUrl: './enrollment-over-time.component.html',
-  styleUrls: ['./enrollment-over-time.component.scss'],
+  styleUrls: ['./enrollment-over-time.component.scss']
 })
 export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy {
   @Input() experiment: ExperimentVM;
@@ -49,7 +52,7 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
   uniqueEnrolled = 0;
   groupEnrolled = 0;
 
-  constructor(private experimentService: ExperimentService) { }
+  constructor(private experimentService: ExperimentService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.experiment) {
@@ -75,10 +78,11 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
       this.partitionsMap.set(partition.id, []);
       this.selectedPartition.push(partition.id);
     });
-    this.groupFiltersOptions = this.experiment.assignmentUnit === ASSIGNMENT_UNIT.INDIVIDUAL ? [INDIVIDUAL] : [INDIVIDUAL, this.experiment.group];
-    this.experimentService.selectExperimentGraphInfo$.pipe(
-      filter((info) => !!info)
-    ).subscribe((graphInfo: any) => {
+    this.groupFiltersOptions =
+      this.experiment.assignmentUnit === ASSIGNMENT_UNIT.INDIVIDUAL
+        ? [INDIVIDUAL]
+        : [INDIVIDUAL, this.experiment.group];
+    this.experimentService.selectExperimentGraphInfo$.pipe(filter(info => !!info)).subscribe((graphInfo: any) => {
       graphInfo.forEach(data => {
         this.setMapValues(data);
       });
@@ -99,7 +103,7 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
     }
 
     // partition map
-    data.partitionIds.forEach((partitionId) => {
+    data.partitionIds.forEach(partitionId => {
       if (!this.partitionsMap.has(partitionId)) {
         this.partitionsMap.set(partitionId, [data]);
       } else {
@@ -115,7 +119,7 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
   }
 
   formateYAxisLabel(value) {
-    return (value % 1 !== 0) ? '' : value;
+    return value % 1 !== 0 ? '' : value;
   }
 
   populateGraphData() {
@@ -124,9 +128,12 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
     // Do intersection of MAPS to filter selected condition and partition data
     this.selectedCondition.map(conditionId => {
       this.selectedPartition.map(partitionId => {
-        graphInfo = [...new Set(
-          [...graphInfo, ...intersectionby(this.conditionsMap.get(conditionId), this.partitionsMap.get(partitionId), 'userId')]
-        )];
+        graphInfo = [
+          ...new Set([
+            ...graphInfo,
+            ...intersectionby(this.conditionsMap.get(conditionId), this.partitionsMap.get(partitionId), 'userId')
+          ])
+        ];
       });
     });
     this.uniqueEnrolled = graphInfo.length;
@@ -138,11 +145,13 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
           groupType.set(user.groupId, user);
         } else {
           const groupTypeUser = groupType.get(user.groupId);
-          const existingUserCreatedAt = Object.keys(groupTypeUser.createdAt).map(partition =>
-            (new Date(groupTypeUser.createdAt[partition]).getTime())
-          ).filter(date => !!date);
-          const newUserCreatedAt = Object.keys(user.createdAt).map(partition => (new Date(user.createdAt[partition]).getTime()));
-          const minDate = min([ ...existingUserCreatedAt, ...newUserCreatedAt ]);
+          const existingUserCreatedAt = Object.keys(groupTypeUser.createdAt)
+            .map(partition => new Date(groupTypeUser.createdAt[partition]).getTime())
+            .filter(date => !!date);
+          const newUserCreatedAt = Object.keys(user.createdAt).map(partition =>
+            new Date(user.createdAt[partition]).getTime()
+          );
+          const minDate = min([...existingUserCreatedAt, ...newUserCreatedAt]);
           if (existingUserCreatedAt.indexOf(new Date(minDate).getTime()) === -1) {
             groupType.set(user.groupId, user);
           }
@@ -164,11 +173,13 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
           last7DaysData[subDays(new Date(), i).toISOString()] = clonedeep(allConditions);
         }
         graphInfo.map(user => {
-          const selectedPartitionsDates = this.selectedPartition.map(partitionId => {
-            if (user.createdAt[partitionId]) {
-              return new Date(user.createdAt[partitionId]);
-            }
-          }).filter(date => !!date);
+          const selectedPartitionsDates = this.selectedPartition
+            .map(partitionId => {
+              if (user.createdAt[partitionId]) {
+                return new Date(user.createdAt[partitionId]);
+              }
+            })
+            .filter(date => !!date);
           const minDate = min(selectedPartitionsDates);
           Object.keys(last7DaysData).map(currentDate => {
             const hasSameDay = isSameDay(new Date(currentDate), minDate);
@@ -189,18 +200,38 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
   }
 
   setDateFilterData(allConditions: any, graphInfo: any) {
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    const monthsValue = this.selectedDateFilter === ExperimentGraphDateFilterOptions.LAST_3_MONTHS ? 3 : (this.selectedDateFilter === ExperimentGraphDateFilterOptions.LAST_6_MONTHS ? 6 : 12);
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+    const monthsValue =
+      this.selectedDateFilter === ExperimentGraphDateFilterOptions.LAST_3_MONTHS
+        ? 3
+        : this.selectedDateFilter === ExperimentGraphDateFilterOptions.LAST_6_MONTHS
+        ? 6
+        : 12;
     const lastMonths = {};
     for (let i = monthsValue - 1; i >= 0; i--) {
-      lastMonths[months[((new Date().getMonth() - i) + 12) % 12]] = clonedeep(allConditions);
+      lastMonths[months[(new Date().getMonth() - i + 12) % 12]] = clonedeep(allConditions);
     }
     graphInfo.map(user => {
-      const selectedPartitionsDates = this.selectedPartition.map(partitionId => {
-        if (user.createdAt[partitionId]) {
-          return new Date(user.createdAt[partitionId]);
-        }
-      }).filter(date => !!date);
+      const selectedPartitionsDates = this.selectedPartition
+        .map(partitionId => {
+          if (user.createdAt[partitionId]) {
+            return new Date(user.createdAt[partitionId]);
+          }
+        })
+        .filter(date => !!date);
       const minDate = min(selectedPartitionsDates);
       Object.keys(lastMonths).map(currentMonth => {
         const userDateMonth = new Date(minDate).getMonth();
@@ -218,16 +249,14 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     return Object.keys(data).map(key => {
       const values = data[key];
-      const series = Object.keys(values).map(innerKey =>
-        ({
-          name: this.getConditionCode(innerKey),
-          value: values[innerKey]
-        })
-      );
+      const series = Object.keys(values).map(innerKey => ({
+        name: this.getConditionCode(innerKey),
+        value: values[innerKey]
+      }));
       return {
         name: type === 'month' ? key : days[new Date(key).getDay()],
         series
-      }
+      };
     }) as any;
   }
 
@@ -236,27 +265,24 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
       case ExperimentFilterType.DATE_FILTER:
         this.experimentService.setGraphRange(this.selectedDateFilter, this.experiment.id);
         break;
-      }
+    }
     this.populateGraphData();
   }
 
   getConditionCode(conditionId: string): string {
-    return this.experiment.conditions.reduce((acc, condition) =>
-      acc = condition.id === conditionId ? condition.conditionCode : acc
-      , '');
+    return this.experiment.conditions.reduce(
+      (acc, condition) => (acc = condition.id === conditionId ? condition.conditionCode : acc),
+      ''
+    );
   }
 
   // Used to form empty series data to keep graph bar width same different value of time filter
   formEmptyGraphSeriesData(limit: number) {
     const emptySeries = [];
-    const conditionEmptyData = [];
-    for (let i = 0; i < this.experiment.conditions.length; i++) {
-      conditionEmptyData.push({ name: '', value: 0 });
-    }
     for (let i = 0; i < limit; i++) {
       emptySeries.push({
         name: i,
-        series: conditionEmptyData
+        series: [{ name: '', value: 0 }]
       });
     }
     return emptySeries;
