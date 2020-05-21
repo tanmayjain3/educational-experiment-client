@@ -1,0 +1,38 @@
+@import '~@angular/material/theming';
+
+@mixin profile-root-component-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  .profile-container {
+    .profile-wrapper {
+      box-shadow: 0 0 8px 0 mat-color($background, shadow-color);
+      background-color: mat-color($background, card);
+
+      .personal-information {
+        box-shadow: 0 8px 8px -8px mat-color($background, shadow-color);
+
+        .user-info {
+          .name {
+            color: mat-color($foreground, text);
+          }
+        }
+
+        .authentication-toggle {
+          color: mat-color($foreground, text);
+        }
+      }
+
+      .role-wrapper {
+        .header {
+          &-title {
+            color: mat-color($foreground, text);
+          }
+        }
+      }
+    }
+  }
+}

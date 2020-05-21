@@ -19,12 +19,12 @@ $role-text-color: #0a7319;
 
   .profile-wrapper {
     border-radius: 10px;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
-    background-color: var(--white);
+    // box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
+    // background-color: var(--white);
 
     .personal-information {
       display: flex;
-      box-shadow: 0 8px 8px -8px rgba(0, 0, 0, 0.1);
+      // box-shadow: 0 8px 8px -8px rgba(0, 0, 0, 0.1);
       padding: 35px 34px 0;
       height: 148px;
 
@@ -46,7 +46,7 @@ $role-text-color: #0a7319;
         flex-grow: 1;
 
         .name {
-          color: var(--black-2);
+          // color: var(--black-2);
         }
 
         .email {
