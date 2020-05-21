@@ -4,7 +4,8 @@ import {
   ViewChild,
   OnDestroy,
   ElementRef,
-  AfterViewInit
+  AfterViewInit,
+  ViewEncapsulation
 } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';

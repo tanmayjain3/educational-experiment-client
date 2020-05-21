@@ -6,7 +6,7 @@
 
   .title {
     margin-bottom: 0;
-    color: var(--black-2);
+    // color: var(--black-2);
   }
 
   .subtitle {
@@ -26,13 +26,13 @@
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
-    background-color: var(--white);
+    // box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
+    // background-color: var(--white);
 
     .text {
       text-align: center;
       line-height: 60px;
-      color: var(--black-2);
+      // color: var(--black-2);
     }
 
     button {

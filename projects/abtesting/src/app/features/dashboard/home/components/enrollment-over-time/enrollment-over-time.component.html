@@ -87,7 +87,7 @@
     <div class="condition-container">
       <div class="condition" *ngFor="let condition of experiment.conditions; let index= index">
         <span class="color-box" [ngStyle]="{'background-color': colors[index]}" ></span>
-        <span>{{ condition.conditionCode }}</span>
+        <span class="condition-code">{{ condition.conditionCode }}</span>
       </div>
     </div>
 

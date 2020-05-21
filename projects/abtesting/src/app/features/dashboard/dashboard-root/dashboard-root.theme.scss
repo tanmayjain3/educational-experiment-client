@@ -1,0 +1,33 @@
+@import '~@angular/material/theming';
+
+@mixin dashboard-component-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  mat-drawer {
+    box-shadow: 0 0 8px 0 mat-color($background, shadow-color);
+  }
+
+  .drawer-container {
+    .logo {
+      box-shadow: 0 0 8px 0 mat-color($background, shadow-color);
+    }
+
+    .list-item-container {
+      .nav-item {
+        color: mat-color($foreground, text);
+      }
+    }
+
+    .user {
+      box-shadow: 0 0 8px 0 mat-color($background, shadow-color);
+    }
+  }
+
+  .drawer__main-content {
+    background-color: mat-color($background, background);
+  }
+}

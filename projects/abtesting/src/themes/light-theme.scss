@@ -67,9 +67,110 @@ contrast: (
 )
 );
 
+$dark-primary-text: rgba(black, 0.87);
+$dark-secondary-text: rgba(black, 0.54);
+$dark-disabled-text: rgba(black, 0.38);
+$dark-dividers: rgba(black, 0.12);
+$dark-focused: rgba(black, 0.12);
+$light-primary-text: white;
+$light-secondary-text: rgba(white, 0.7);
+$light-disabled-text: rgba(white, 0.5);
+$light-dividers: rgba(white, 0.12);
+$light-focused: rgba(white, 0.12);
 
-$primary: mat-palette($mat-blue);
-$accent: mat-palette($mat-light-blue);
-$warn: mat-palette($mat-red);
+$mat-grey: (
+50: #fafafa,
+100: #f5f5f5,
+200: #eeeeee,
+300: #e0e0e0,
+400: #bdbdbd,
+500: #9e9e9e,
+600: #757575,
+700: #616161,
+800: #424242,
+900: #212121,
+A100: #ffffff,
+A200: #eeeeee,
+A400: #bdbdbd,
+A700: #616161,
+contrast: (
+  50: $dark-primary-text,
+  100: $dark-primary-text,
+  200: $dark-primary-text,
+  300: $dark-primary-text,
+  400: $dark-primary-text,
+  500: $dark-primary-text,
+  600: $light-primary-text,
+  700: $light-primary-text,
+  800: $light-primary-text,
+  900: $light-primary-text,
+  A100: $dark-primary-text,
+  A200: $dark-primary-text,
+  A400: $dark-primary-text,
+  A700: $light-primary-text,
+)
+);
 
-$theme: mat-light-theme($primary, $accent, $warn);
+// $primary: mat-palette($mat-blue);
+// $accent: mat-palette($mat-light-blue);
+// $warn: mat-palette($mat-red);
+
+// $theme: mat-light-theme($primary, $accent, $warn);
+
+// Background palette for light themes.
+$mat-light-theme-background: (
+status-bar: map_get($mat-grey, 300),
+app-bar:    map_get($mat-grey, 100),
+background: #f0f2f9,
+hover:      rgba(black, 0.04), // TODO(kara): check style with Material Design UX
+card:       white,
+dialog:     white,
+disabled-button: rgba(black, 0.12),
+raised-button: white,
+focused-button: $dark-focused,
+selected-button: map_get($mat-grey, 300),
+selected-disabled-button: map_get($mat-grey, 400),
+disabled-button-toggle: map_get($mat-grey, 200),
+unselected-chip: map_get($mat-grey, 300),
+disabled-list-option: map_get($mat-grey, 200),
+shadow-color: rgba(0, 0, 0, 0.12),
+);
+
+// Foreground palette for light themes.
+$mat-light-theme-foreground: (
+base:              black,
+divider:           $dark-dividers,
+dividers:          $dark-dividers,
+disabled:          $dark-disabled-text,
+disabled-button:   rgba(black, 0.26),
+disabled-text:     $dark-disabled-text,
+elevation:         black,
+hint-text:         $dark-disabled-text,
+secondary-text:    $dark-secondary-text,
+icon:              rgba(black, 0.54),
+icons:             rgba(black, 0.54),
+text:              #222b45,
+slider-min:        rgba(black, 0.87),
+slider-off:        rgba(black, 0.26),
+slider-off-active: rgba(black, 0.38),
+);
+
+
+// instead of creating a theme with mat-light-theme like a sane person, we will create our own theme-creating function that lets us apply our own foreground and background palettes.
+@function create-wonky-theme($primary, $accent, $warn: mat-palette($mat-red)) {
+  @return (
+    primary: $primary,
+    accent: $accent,
+    warn: $warn,
+    is-dark: false,
+    foreground: $mat-light-theme-foreground,
+    background: $mat-light-theme-background
+  );
+}
+
+// The rest of this is like a normal theme.scss file. The only difference being that we use create-wonky-theme instead of mat-light-theme
+$custom-theme-primary: mat-palette($mat-blue);
+$custom-theme-accent: mat-palette($mat-light-blue);
+$custom-theme-warn: mat-palette($mat-red);
+
+$theme: create-wonky-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);

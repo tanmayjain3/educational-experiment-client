@@ -6,7 +6,7 @@ mat-drawer-container {
 }
 
 mat-drawer {
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
+  // box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
   width: 243px;
 }
 
@@ -18,7 +18,7 @@ mat-drawer {
   .logo {
     display: flex;
     align-items: flex-end;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
+    // box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
     padding: 0 26px;
     height: 150px;
 
@@ -49,7 +49,7 @@ mat-drawer {
         width: 100%;
         text-align: inherit;
         text-decoration: none;
-        color: var(--black-2);
+        // color: var(--black-2);
         user-select: none;
 
         .icon {
@@ -85,7 +85,7 @@ mat-drawer {
   .user {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
+    // box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
     padding: 1rem;
 
     &-list {
@@ -127,7 +127,7 @@ mat-drawer {
 }
 
 .drawer__main-content {
-  background-color: $white-background;
+  // background-color: $white-background;
 
   &-header {
     display: flex;
