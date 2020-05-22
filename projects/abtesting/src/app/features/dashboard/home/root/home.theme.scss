@@ -1,0 +1,15 @@
+@import '~@angular/material/theming';
+
+@mixin home-component-theme($theme) {
+  $background: map-get($theme, background);
+
+  .experiments-container {
+    .experiment-table {
+      box-shadow: 0 0 8px 0 mat-color($background, shadow-color);
+    }
+
+    .no-experiment-container {
+      box-shadow: 0 0 8px 0 mat-color($background, shadow-color);
+    }
+  }
+}
