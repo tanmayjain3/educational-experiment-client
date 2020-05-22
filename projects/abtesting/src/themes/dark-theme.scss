@@ -124,7 +124,7 @@ selected-disabled-button: map_get($mat-grey, 800),
 disabled-button-toggle: black,
 unselected-chip: map_get($mat-grey, 700),
 disabled-list-option: black,
-shadow-color: #48484a,
+shadow-color: #000000,
 );
 
 // Foreground palette for dark themes.
@@ -137,7 +137,7 @@ disabled-button:   rgba(white, 0.3),
 disabled-text:     $light-disabled-text,
 elevation:         black,
 hint-text:         $light-disabled-text,
-secondary-text:    white,
+secondary-text:    $light-secondary-text,
 icon:              white,
 icons:             white,
 text:              white,

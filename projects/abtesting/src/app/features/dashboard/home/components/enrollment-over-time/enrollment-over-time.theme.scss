@@ -1,33 +1,13 @@
 @import '~@angular/material/theming';
 
 @mixin enrollment-over-time-component-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-  $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
   .enrollment-over-time {
-    &__title {
-      color: mat-color($foreground, text);
-    }
-
-    .chart-container {
-      .condition-container {
-        .condition {
-          .condition-code {
-            color: mat-color($foreground, text)
-          }
-        }
+    .ngx-charts {
+      text {
+        fill: mat-color($foreground, text);
       }
-    }
-  }
-
-  ::ng-deep .ngx-charts {
-    ::ng-deep text {
-      fill: white;
-      font-family: 'Open Sans';
-      font-weight: 600;
     }
   }
 }

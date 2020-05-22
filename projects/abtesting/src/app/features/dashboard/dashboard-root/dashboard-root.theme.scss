@@ -1,9 +1,6 @@
 @import '~@angular/material/theming';
 
 @mixin dashboard-component-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
@@ -29,5 +26,9 @@
 
   .drawer__main-content {
     background-color: mat-color($background, background);
+
+    .theme-selector {
+      color: mat-color($foreground, text);
+    }
   }
 }

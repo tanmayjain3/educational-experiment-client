@@ -1,5 +1,5 @@
 <div class="exclude-entities">
-  <span class="ft-22-700 header-title">{{ 'users.excluded-entity.text' | translate }}</span>
+  <span class="ft-22-700">{{ 'users.excluded-entity.text' | translate }}</span>
   <form class="exclude-form" [formGroup]="excludeEntitiesForm" *ngIf="(permissions$ | async)?.users.create">
     <mat-form-field class="ft-14-600 form-control">
       <mat-select class="input" formControlName="entityType">
@@ -69,12 +69,13 @@
       <ng-container matColumnDef="removeEntity">
         <th mat-header-cell *matHeaderCellDef class="ft-12-700"></th>
         <td class="ft-12-600" mat-cell *matCellDef="let element">
-          <app-shared-icons
+          <mat-icon
             *ngIf="(permissions$ | async)?.users.delete"
-            [iconType]="'delete'"
             class="remove-icon"
             (click)="removeExcludedEntity(element)"
-          ></app-shared-icons>
+          >
+            delete_outline
+          </mat-icon>
         </td>
       </ng-container>
 

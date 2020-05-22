@@ -1,30 +1,21 @@
 @import '~@angular/material/theming';
 
 @mixin view-experiment-component-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
   .experiment-container {
     background-color: mat-color($background, background);
 
-    .experiment-title,
     .experiment-link {
       color: mat-color($foreground, text)
     }
 
     .experiment {
       box-shadow: 0 0 8px 0 mat-color($background, shadow-color);
-      background-color: mat-color($background, card);
 
       &-info {
         box-shadow: 0 8px 8px -8px mat-color($background, shadow-color);
-
-        .experiment-overview {
-          color: mat-color($foreground, text)
-        }
 
         .action-buttons {
           .button {
@@ -35,6 +26,14 @@
 
       &-secondary-info {
         box-shadow: 0 8px 8px -8px mat-color($background, shadow-color);
+
+        &-container {
+          .section-data {
+            .edit-icon {
+              color: mat-color($foreground, icon);
+            }
+          }
+        }
 
         .experiment-chips {
           &-values {
@@ -49,10 +48,6 @@
     .table-container {
       &-partition {
         box-shadow: 0 8px 8px -8px mat-color($background, shadow-color);
-      }
-
-      .title {
-        color: mat-color($foreground, text)
       }
     }
   }

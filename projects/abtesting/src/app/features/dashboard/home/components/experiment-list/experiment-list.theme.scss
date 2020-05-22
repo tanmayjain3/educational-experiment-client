@@ -1,25 +1,15 @@
 @import '~@angular/material/theming';
 
 @mixin experiment-list-component-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
   .experiments-list-container {
-    box-shadow: 0 0 8px 0 mat-color($background, shadow-color);
-    background-color: mat-color($background, card);
-
     .header {
       box-shadow: 0 8px 8px -8px mat-color($background, shadow-color);
     }
 
     .experiment-list {
-      td {
-        color: mat-color($foreground, text);
-      }
-
       .experiment {
         &-name {
           color: mat-color($foreground, text);

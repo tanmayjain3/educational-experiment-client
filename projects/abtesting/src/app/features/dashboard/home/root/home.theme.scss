@@ -1,24 +1,15 @@
 @import '~@angular/material/theming';
 
 @mixin home-component-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
   $background: map-get($theme, background);
-  $foreground: map-get($theme, foreground);
 
   .experiments-container {
-    .title {
-      color: mat-color($foreground, text);
+    .experiment-table {
+      box-shadow: 0 0 8px 0 mat-color($background, shadow-color);
     }
 
     .no-experiment-container {
       box-shadow: 0 0 8px 0 mat-color($background, shadow-color);
-      background-color: mat-color($background, card);
-
-      .text {
-        color: mat-color($foreground, text);
-      }
     }
   }
 }
