@@ -48,8 +48,8 @@
 }
 
 .light-theme {
-  @include angular-material-theme($theme);
-  @include custom-components-theme($theme);
+  @include angular-material-theme($light-theme);
+  @include custom-components-theme($light-theme);
 }
 
 .dark-theme {

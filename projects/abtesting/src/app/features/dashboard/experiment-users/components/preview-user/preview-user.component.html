@@ -117,15 +117,13 @@
             <th mat-header-cell *matHeaderCellDef class="ft-12-700"></th>
             <td class="ft-12-600" mat-cell *matCellDef="let element; let index = index">
               <div class="icons-container" [ngClass]="{'icons-container--edit-mode': editMode === index}">
-                <!-- <span class="edit-icon"> -->
-                  <mat-icon
-                    *ngIf="(permissions?.users.update && editMode !== index); else saveBtnTemplate"
-                    class="action-icon action-icon--edit"
-                    (click)="editAssignedConditions(index)"
-                  >
-                    create
-                  </mat-icon>
-                <!-- </span> -->
+                <mat-icon
+                  *ngIf="(permissions?.users.update && editMode !== index); else saveBtnTemplate"
+                  class="action-icon action-icon--edit"
+                  (click)="editAssignedConditions(index)"
+                >
+                  create
+                </mat-icon>
 
                 <ng-template #saveBtnTemplate>
                   <button
