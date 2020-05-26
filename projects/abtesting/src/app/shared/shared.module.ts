@@ -21,7 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatSliderModule, MatAutocompleteModule } from '@angular/material/';
+import { MatSliderModule, MatAutocompleteModule, MatTreeModule } from '@angular/material/';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -34,6 +34,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { SharedIconsComponent } from './components/shared-icons/shared-icons.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { ExperimentStatePipe } from './pipes/experiment-state.pipe';
+import { ScrollDirective } from './directives/scroll.directive';
 
 @NgModule({
   imports: [
@@ -68,8 +69,9 @@ import { ExperimentStatePipe } from './pipes/experiment-state.pipe';
     MatExpansionModule,
     MatProgressBarModule,
     MatAutocompleteModule,
+    MatTreeModule,
   ],
-  declarations: [SharedIconsComponent, TruncatePipe, ExperimentStatePipe],
+  declarations: [SharedIconsComponent, TruncatePipe, ExperimentStatePipe, ScrollDirective],
   exports: [
     CommonModule,
     FormsModule,
@@ -104,10 +106,12 @@ import { ExperimentStatePipe } from './pipes/experiment-state.pipe';
     MatExpansionModule,
     MatProgressBarModule,
     MatAutocompleteModule,
+    MatTreeModule,
 
     SharedIconsComponent,
     TruncatePipe,
-    ExperimentStatePipe
+    ExperimentStatePipe,
+    ScrollDirective
   ]
 })
 export class SharedModule {}

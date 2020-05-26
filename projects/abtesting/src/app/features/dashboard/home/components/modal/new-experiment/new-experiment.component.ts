@@ -1,10 +1,9 @@
-import { Component, ChangeDetectionStrategy, Inject, ViewChild } from '@angular/core';
+import { Component, Inject, ViewChild, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import {
   NewExperimentDialogEvents,
   NewExperimentDialogData,
   NewExperimentPaths,
-  EXPERIMENT_STATE,
   ExperimentVM
 } from '../../../../../../core/experiments/store/experiments.model';
 import { ExperimentService } from '../../../../../../core/experiments/experiments.service';
@@ -13,9 +12,8 @@ import { ExperimentService } from '../../../../../../core/experiments/experiment
   selector: 'home-new-experiment',
   templateUrl: './new-experiment.component.html',
   styleUrls: ['./new-experiment.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewExperimentComponent {
+export class NewExperimentComponent implements OnInit {
   newExperimentData: any = {};
   selectedStepperIndex = 0;
   experimentInfo: ExperimentVM;
@@ -29,6 +27,11 @@ export class NewExperimentComponent {
     if (this.data) {
       this.experimentInfo = this.data.experiment;
     }
+  }
+
+  ngOnInit() {
+    // Used to fetch context only once
+    this.experimentService.fetchExperimentContext();
   }
 
   onNoClick(): void {
@@ -47,7 +50,7 @@ export class NewExperimentComponent {
           ...formData
         };
         this.stepper.next();
-        if (path === NewExperimentPaths.POST_EXPERIMENT_RULE) {
+        if (path === NewExperimentPaths.METRIC) {
           this.experimentService.createNewExperiment(this.newExperimentData);
           this.onNoClick();
         }

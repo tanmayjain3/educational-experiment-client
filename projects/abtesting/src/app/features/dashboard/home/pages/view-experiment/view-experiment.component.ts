@@ -17,6 +17,7 @@ import { AuthService } from '../../../../../core/auth/auth.service';
 import { Router } from '@angular/router';
 import * as clonedeep from 'lodash.clonedeep';
 import { ExperimentStatePipeType } from '../../../../../shared/pipes/experiment-state.pipe';
+import { MetricModalComponent } from '../../components/modal/metric-modal/metric-modal.component';
 
 // Used in view-experiment component only
 enum DialogType {
@@ -88,8 +89,18 @@ export class ViewExperimentComponent implements OnInit, OnDestroy {
     });
   }
 
+  openMetricUpdateModal() {
+    const dialogRef = this.dialog.open(MetricModalComponent, {
+      panelClass: 'metric-modal',
+      data: { experiment: clonedeep(this.experiment) }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Add code of further actions after deleting experiment
+    });
+  }
+
   exportExperimentInfo(experimentId: string, experimentName: string) {
-    // TODO: Find a better way for this
     this.experimentService.exportExperimentInfo(experimentId, experimentName);
   }
 
