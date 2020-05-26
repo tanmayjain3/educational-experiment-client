@@ -96,7 +96,7 @@ export class MetricCommonComponent implements OnInit, OnChanges {
     this.refreshTreeData();
   }
 
-  openAddNodeDialog(currentNode: TreeData): void {
+  openAddNodeDialog(currentNode?: TreeData): void {
     const dialogRef = this.dialog.open(TreeNodeDialogComponent, {
       panelClass: 'tree-modal',
       data: { nodeName: this.nameKey, component: 'Add' }
