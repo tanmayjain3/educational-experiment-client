@@ -5,6 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
+    "cl:build": "npm run build:prod && npm run cl:create-package-json",
+    "cl:create-package-json": "echo {\"name\": \"abtesting\", \"version\": \"1.0.0\"} > dist/abtesting/package.json",
     "start:prod": "npm run build:prod && npm run server",
     "build": "ng build",
     "build:prod": "ng build --prod",
