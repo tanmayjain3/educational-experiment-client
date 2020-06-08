@@ -1,5 +1,5 @@
 <div class="exclude-entities">
-  <h3 class="ft-22-700">{{ 'users.excluded-entity.text' | translate }}</h3>
+  <span class="ft-22-700">{{ 'users.excluded-entity.text' | translate }}</span>
   <form class="exclude-form" [formGroup]="excludeEntitiesForm" *ngIf="(permissions$ | async)?.users.create">
     <mat-form-field class="ft-14-600 form-control">
       <mat-select class="input" formControlName="entityType">
@@ -82,6 +82,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+
     <mat-paginator class="paginator" [hidePageSize]="true" [pageSize]="5"></mat-paginator>
   </div>
 

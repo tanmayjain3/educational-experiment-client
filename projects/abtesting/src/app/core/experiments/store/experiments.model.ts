@@ -149,10 +149,10 @@ export enum ExperimentGraphDateFilterOptions {
 }
 
 export interface IExperimentGraphInfo {
-  [ExperimentGraphDateFilterOptions.LAST_7_DAYS]: IExperimentDateStat[],
-  [ExperimentGraphDateFilterOptions.LAST_3_MONTHS]: IExperimentDateStat[],
-  [ExperimentGraphDateFilterOptions.LAST_6_MONTHS]: IExperimentDateStat[],
-  [ExperimentGraphDateFilterOptions.LAST_12_MONTHS]: IExperimentDateStat[],
+  [ExperimentGraphDateFilterOptions.LAST_7_DAYS]: IExperimentDateStat[];
+  [ExperimentGraphDateFilterOptions.LAST_3_MONTHS]: IExperimentDateStat[];
+  [ExperimentGraphDateFilterOptions.LAST_6_MONTHS]: IExperimentDateStat[];
+  [ExperimentGraphDateFilterOptions.LAST_12_MONTHS]: IExperimentDateStat[];
 }
 
 export interface ExperimentVM extends Experiment {
@@ -170,11 +170,11 @@ export interface ExperimentState extends EntityState<Experiment> {
   stats: {
     [key: string]: IExperimentEnrollmentStats;
   };
-  graphInfo: IExperimentGraphInfo,
+  graphInfo: IExperimentGraphInfo;
   graphRange: ExperimentGraphDateFilterOptions;
   allPartitions: {};
   allExperimentNames: {};
-  context: string[]
+  context: string[];
 }
 
 export interface State extends AppState {

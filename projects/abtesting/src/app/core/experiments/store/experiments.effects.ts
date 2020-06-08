@@ -222,51 +222,48 @@ export class ExperimentEffects {
     )
   );
 
-  fetchGraphInfo$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(experimentAction.actionFetchExperimentGraphInfo),
-        map(action => ({ experimentId: action.experimentId, range: action.range})),
-        filter(({ experimentId, range }) => !!experimentId && !!range),
-        withLatestFrom(
-          this.store$.pipe(select(selectExperimentGraphInfo))
-        ),
-        mergeMap(([{ experimentId, range }, graphData]) => {
-          if (!graphData) {
-            let params: any = {
-              experimentId,
-              toDate: new Date().toISOString()
-            };
-            const startDateOfCurrentMonth = addDays(startOfMonth(new Date()), 1);
-            let fromDate;
-            switch (range) {
-              case ExperimentGraphDateFilterOptions.LAST_7_DAYS:
-                fromDate = set(subDays(new Date(), 6), { hours: 0, minutes: 0, seconds: 0 });
-                break;
-              case ExperimentGraphDateFilterOptions.LAST_3_MONTHS:
-                fromDate = subMonths(startDateOfCurrentMonth, 2); // Subtract current Month so 3 - 1 = 2
-                break;
-              case ExperimentGraphDateFilterOptions.LAST_6_MONTHS:
-                fromDate = subMonths(startDateOfCurrentMonth, 5);
-                break;
-              case ExperimentGraphDateFilterOptions.LAST_12_MONTHS:
-                fromDate = subMonths(startDateOfCurrentMonth, 11);
-                break;
-            }
-            params = {
-              ...params,
-              fromDate: fromDate.toISOString()
-            }
-            return this.experimentDataService.fetchExperimentGraphInfo(params).pipe(
-              map((data: any) => {
-                return experimentAction.actionFetchExperimentGraphInfoSuccess({ range, graphInfo: data })
-              }),
-              catchError(() => [experimentAction.actionFetchExperimentGraphInfoFailure()])
-            )
+  fetchGraphInfo$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(experimentAction.actionFetchExperimentGraphInfo),
+      map(action => ({ experimentId: action.experimentId, range: action.range })),
+      filter(({ experimentId, range }) => !!experimentId && !!range),
+      withLatestFrom(this.store$.pipe(select(selectExperimentGraphInfo))),
+      mergeMap(([{ experimentId, range }, graphData]) => {
+        if (!graphData) {
+          let params: any = {
+            experimentId,
+            toDate: new Date().toISOString()
+          };
+          const startDateOfCurrentMonth = addDays(startOfMonth(new Date()), 1);
+          let fromDate;
+          switch (range) {
+            case ExperimentGraphDateFilterOptions.LAST_7_DAYS:
+              fromDate = set(subDays(new Date(), 6), { hours: 0, minutes: 0, seconds: 0 });
+              break;
+            case ExperimentGraphDateFilterOptions.LAST_3_MONTHS:
+              fromDate = subMonths(startDateOfCurrentMonth, 2); // Subtract current Month so 3 - 1 = 2
+              break;
+            case ExperimentGraphDateFilterOptions.LAST_6_MONTHS:
+              fromDate = subMonths(startDateOfCurrentMonth, 5);
+              break;
+            case ExperimentGraphDateFilterOptions.LAST_12_MONTHS:
+              fromDate = subMonths(startDateOfCurrentMonth, 11);
+              break;
           }
-          return [];
-        })
-      )
+          params = {
+            ...params,
+            fromDate: fromDate.toISOString()
+          };
+          return this.experimentDataService.fetchExperimentGraphInfo(params).pipe(
+            map((data: any) => {
+              return experimentAction.actionFetchExperimentGraphInfoSuccess({ range, graphInfo: data });
+            }),
+            catchError(() => [experimentAction.actionFetchExperimentGraphInfoFailure()])
+          );
+        }
+        return [];
+      })
+    )
   );
 
   setExperimentGraphRange$ = createEffect(
@@ -283,7 +280,7 @@ export class ExperimentEffects {
           }
         })
       ),
-      { dispatch: false }
+    { dispatch: false }
   );
 
   navigateOnDeleteExperiment$ = createEffect(

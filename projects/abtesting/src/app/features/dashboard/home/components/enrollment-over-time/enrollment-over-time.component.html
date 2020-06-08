@@ -8,10 +8,7 @@
         [(ngModel)]="selectedGroupFilter"
         (selectionChange)="applyExperimentFilter(ExperimentFilter.GROUP_FILTER)"
       >
-        <mat-option
-          *ngFor="let groupValue of groupFiltersOptions"
-          [value]="groupValue"
-        >
+        <mat-option *ngFor="let groupValue of groupFiltersOptions" [value]="groupValue">
           {{ groupValue | titlecase }}
         </mat-option>
       </mat-select>
@@ -30,13 +27,11 @@
           [indeterminate]="isIndeterminate('conditions')"
           [checked]="isChecked('conditions')"
           (click)="$event.stopPropagation()"
-          (change)="toggleSelection($event, 'conditions')">
-            {{ 'home.view-experiment.graph-select-all.text' | translate }}
-        </mat-checkbox>
-        <mat-option
-          *ngFor="let condition of conditionsFilterOptions"
-          [value]="condition.id"
+          (change)="toggleSelection($event, 'conditions')"
         >
+          {{ 'home.view-experiment.graph-select-all.text' | translate }}
+        </mat-checkbox>
+        <mat-option *ngFor="let condition of conditionsFilterOptions" [value]="condition.id">
           {{ condition.code | titlecase }}
         </mat-option>
       </mat-select>
@@ -55,13 +50,11 @@
           [indeterminate]="isIndeterminate('partitions')"
           [checked]="isChecked('partitions')"
           (click)="$event.stopPropagation()"
-          (change)="toggleSelection($event, 'partitions')">
-            {{ 'home.view-experiment.graph-select-all.text' | translate }}
-        </mat-checkbox>
-        <mat-option
-          *ngFor="let partition of partitionsFilterOptions"
-          [value]="partition.id"
+          (change)="toggleSelection($event, 'partitions')"
         >
+          {{ 'home.view-experiment.graph-select-all.text' | translate }}
+        </mat-checkbox>
+        <mat-option *ngFor="let partition of partitionsFilterOptions" [value]="partition.id">
           {{ partition.point | titlecase }}
         </mat-option>
       </mat-select>
@@ -73,10 +66,7 @@
         [(ngModel)]="selectedDateFilter"
         (selectionChange)="applyExperimentFilter(ExperimentFilter.DATE_FILTER)"
       >
-        <mat-option
-          *ngFor="let dateFilterType of dateFilterOptions"
-          [value]="dateFilterType"
-        >
+        <mat-option *ngFor="let dateFilterType of dateFilterOptions" [value]="dateFilterType">
           {{ dateFilterType | titlecase }}
         </mat-option>
       </mat-select>
@@ -87,7 +77,7 @@
     <div class="condition-container">
       <div class="condition" *ngFor="let condition of experiment.conditions; let index= index">
         <span class="color-box" [ngStyle]="{'background-color': colors[index]}" ></span>
-        <span>{{ condition.conditionCode }}</span>
+        <span class="condition-code">{{ condition.conditionCode }}</span>
       </div>
     </div>
 

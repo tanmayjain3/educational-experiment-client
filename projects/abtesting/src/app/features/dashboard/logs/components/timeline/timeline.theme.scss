@@ -1,0 +1,28 @@
+@import '~@angular/material/theming';
+
+@mixin timeline-component-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  .timeline {
+    .content {
+      .error-type,
+      .user-name {
+        color: mat-color($foreground, text);
+      }
+
+      .action {
+        &-msg {
+          color: mat-color($foreground, text);
+        }
+      }
+
+      .log-time {
+        color: mat-color($foreground, text);
+      }
+    }
+  }
+}
