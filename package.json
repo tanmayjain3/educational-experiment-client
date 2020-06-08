@@ -8,7 +8,6 @@
     "cl:build": "npm run build:prod && npm run cl:copy-package-json",
     "cl:copy-package-json": "cp projects/abtesting/package.json dist/abtesting/",
     "start:prod": "npm run build:prod && npm run server",
-    "prebuild": "npm run test",
     "build": "ng build",
     "prebuild:prod": "npm run test",
     "build:prod": "ng build --prod",
