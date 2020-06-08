@@ -5,6 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
+    "cl:build": "npm run build:prod && npm run cl:copy-package-json",
+    "cl:copy-package-json": "cp projects/abtesting/package.json dist/abtesting/",
     "start:prod": "npm run build:prod && npm run server",
     "build": "ng build",
     "build:prod": "ng build --prod",
@@ -61,7 +63,7 @@
     "rxjs": "~6.5.0",
     "tslib": "^1.9.0",
     "upgrade_types": "github:CarnegieLearningWeb/educational-experiment-types#master",
-    "uuidv4": "^6.0.0",
+    "uuid": "^3.3.3",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
