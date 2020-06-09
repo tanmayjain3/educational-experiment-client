@@ -30,9 +30,14 @@ module.exports = function (config) {
     browsers: ['Chrome'],
     restartOnFileChange: true,
     customLaunchers: {
-      ChromeTravisCi: {
+      'ChromeHeadless': {
         base: 'Chrome',
-        flags: ['--no-sandbox']
+        flags: [
+          '--no-sandbox',
+          '--headless',
+          '--disable-gpu',
+          '--remote-debugging-port=9222'
+        ]
       }
     },
     browserNoActivityTimeout: 50000,
