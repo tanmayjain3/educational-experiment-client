@@ -1,4 +1,4 @@
-const endpointApi = 'http://bsnl-upgrade-experiment-app.eba-gp6psjut.us-east-1.elasticbeanstalk.com/api';
+const endpointApi = 'http://new-bsnl-upgrade-experiment-app.eba-gp6psjut.us-east-1.elasticbeanstalk.com/api';
 
 export const environment = {
   appName: 'UpGrade',
@@ -17,6 +17,7 @@ export const environment = {
     getAllAuditLogs: `${endpointApi}/audit`,
     getAllErrorLogs: `${endpointApi}/error`,
     experimentsStats: `${endpointApi}/stats/enrolment`,
+    experimentDetailStat: `${endpointApi}/stats/enrolment/detail`,
     generateCsv: `${endpointApi}/stats/csv`,
     experimentGraphInfo: `${endpointApi}/stats/enrolment/date`,
     deleteExperiment: `${endpointApi}/experiments`,
@@ -36,7 +37,6 @@ export const environment = {
     getPaginatedFlags: `${endpointApi}/flags/paginated`,
     setting: `${endpointApi}/setting`,
     metrics: `${endpointApi}/metric`,
-    query: `${endpointApi}/query`,
     queryResult: `${endpointApi}/query/analyse`
   }
 };
