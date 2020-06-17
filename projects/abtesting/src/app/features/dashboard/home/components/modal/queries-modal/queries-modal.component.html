@@ -2,7 +2,9 @@
   <span class="ft-24-700 title">{{ 'global.queries-tabs.text' | translate }}</span>
   <div class="query-view">
     <div class="query-actions">
-      <mat-form-field>
+
+      <!-- Do not shows search bar in create query view -->
+      <mat-form-field *ngIf="!createQueryMode; else queryModeTemplate">
         <input
           class="ft-16-400 search-input"
           [(ngModel)]="searchInput"
@@ -12,6 +14,9 @@
         />
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
+      <ng-template #queryModeTemplate>
+        <h3>Create Query</h3>
+      </ng-template>
       <button
         mat-flat-button
         color="primary"

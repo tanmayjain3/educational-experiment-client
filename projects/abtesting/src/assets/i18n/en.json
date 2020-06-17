@@ -232,6 +232,8 @@
   "query.table-name.text": "NAME",
   "query.table-query-name.text": "Query Name",
   "query.table-operation.text": "OPERATION",
+  "query.form-compareFn.text": "Compare Function",
+  "query.form-compare-value.text": "Value",
   "query.table-experiment.text": "EXPERIMENT",
   "query.table-execute.text": "EXECUTE",
   "query.result-title.text": "Query Result",

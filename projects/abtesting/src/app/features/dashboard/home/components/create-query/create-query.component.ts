@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, Input } from '@angular/core';
-import { Subscription, BehaviorSubject, of } from 'rxjs';
-import { MetricUnit, OPERATION_TYPES, METRICS_JOIN_TEXT, Query } from '../../../../../core/analysis/store/analysis.models';
-import { NestedTreeControl } from '@angular/cdk/tree';
-import { MatTreeNestedDataSource, MatTableDataSource } from '@angular/material';
+import { Subscription, Observable } from 'rxjs';
+import { OPERATION_TYPES, Query, METRICS_JOIN_TEXT } from '../../../../../core/analysis/store/analysis.models';
 import { AnalysisService } from '../../../../../core/analysis/analysis.service';
 import { ExperimentVM } from '../../../../../core/experiments/store/experiments.model';
 import { ExperimentService } from '../../../../../core/experiments/experiments.service';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-query',
@@ -14,179 +14,166 @@ import { ExperimentService } from '../../../../../core/experiments/experiments.s
 })
 export class CreateQueryComponent implements OnInit, OnDestroy {
   @Input() experimentInfo: ExperimentVM;
-  displayedColumns = ['id', 'metric'];
 
   // Used for displaying metrics
-  allMetrics: any;
   allMetricsSub: Subscription;
   isAnalysisMetricsLoading$ = this.analysisService.isMetricsLoading$;
 
-  // For tree structure
-  _dataChange = new BehaviorSubject<MetricUnit[]>([]);
-  nestedTreeControl: NestedTreeControl<MetricUnit>;
-  nestedDataSource: MatTreeNestedDataSource<MetricUnit>;
-  insertNodeIndex = 0;
-
-  selectedMetricIndex = null;
-  selectedKey: string;
-  // TODO: Update type
-  selectedKeyMeta: any;
-  selectedOperation: string;
-  queryName: string;
-
   queryOperations = [];
 
-  // Where clause
   comparisonFns = [
     { value: '=', viewValue: 'equal' },
     { value: '<>', viewValue: 'not equal' }
   ];
-  compareFn: string;
-  compareValue: string;
+  metricSelectionForm: FormGroup;
+  filteredOptions: Observable<any[]>[] = [];
+  options: any[] = [];
+  isKeySelected = false;
 
   @ViewChild('metricsTable', { static: false }) metricsTable: ElementRef;
 
   constructor(
     private analysisService: AnalysisService,
-    private experimentService: ExperimentService
+    private experimentService: ExperimentService,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit() {
     this.allMetricsSub = this.analysisService.allMetrics$.subscribe(metrics => {
-      this.selectedMetricIndex = null;
-      this.allMetrics = new MatTableDataSource();
-      this.allMetrics.data = metrics;
+      this.options[0] = metrics;
     });
 
-    this.nestedTreeControl = new NestedTreeControl<MetricUnit>(this._getChildren);
-    this.nestedDataSource = new MatTreeNestedDataSource();
-
-    this._dataChange.subscribe(
-      data => (this.nestedDataSource.data = data)
-    );
+    this.metricSelectionForm = this.fb.group({
+      keys: this.fb.array([this.addKeys()]),
+      queryName: [null, Validators.required],
+      operationType: [null, Validators.required],
+      compareFn: [null],
+      compareValue: [null]
+    });
+    this.ManageNameControl(0);
   }
 
-  private _getChildren = (node: MetricUnit) => of(node.children);
-  hasNestedChild = (_: number, nodeData: MetricUnit) => nodeData.children.length > 0;
-
-  createTree(metrics: MetricUnit[]): void {
-    const tree = metrics.map(metric => this.insertNode(metric));
-    this._dataChange.next(tree);
+  get keys() {
+    return this.metricSelectionForm.get('keys') as FormArray;
   }
 
-  insertNode(metrics: any): MetricUnit {
-    if (!metrics.children.length) {
-      const data = { id: this.insertNodeIndex, ...metrics };
-      this.insertNodeIndex += 1;
-      return data;
-    }
-    metrics = {
-      id: this.insertNodeIndex, ...metrics, children: metrics.children.map(data => {
-        this.insertNodeIndex += 1;
-        data = this.insertNode(data);
-        return data;
+  addKeys() {
+    return this.fb.group({
+      metricKey: [null, Validators.required]
+    });
+  }
+
+  removeKey(index) {
+    this.keys.removeAt(index);
+  }
+
+  ManageNameControl(index: number) {
+    const arrayControl = this.metricSelectionForm.get('keys') as FormArray;
+    this.filteredOptions[index] = arrayControl.at(index).get('metricKey').valueChanges
+      .pipe(
+      startWith<string>(''),
+      map(key => {
+        for (let i = index - 1; i >= 0; i--) {
+          arrayControl.at(i).disable();
+        }
+        if (index - 1 >= 0) {
+          const { metricKey } = arrayControl.at(index - 1).value;
+          this.options[index] = metricKey.children;
+        }
+        return key ? this._filter(key, index) : this.options[index] ? this.options[index].slice() : [];
       })
-    };
-    return metrics;
+      );
   }
 
-  selectKey(node) {
-    if (!node.children.length) {
-      this.selectedKey = node.key;
-      this.selectedKeyMeta = node;
-      if (node.metadata && node.metadata.type === 'continuous') {
-        this.queryOperations = [
-          { value: OPERATION_TYPES.SUM, viewValue: 'Sum' },
-          { value: OPERATION_TYPES.MIN, viewValue: 'Min' },
-          { value: OPERATION_TYPES.MAX, viewValue: 'Max' },
-          { value: OPERATION_TYPES.COUNT, viewValue: 'Count' },
-          { value: OPERATION_TYPES.AVERAGE, viewValue: 'Average' },
-          { value: OPERATION_TYPES.MODE, viewValue: 'Mode' },
-          { value: OPERATION_TYPES.MEDIAN, viewValue: 'Median' },
-          { value: OPERATION_TYPES.STDEV, viewValue: 'Standard Deviation' }
-        ];
-      } else if (node.metadata && node.metadata.type === 'categorical') {
-        this.queryOperations = [
-          { value: OPERATION_TYPES.COUNT, viewValue: 'Count' },
-          { value: 'percent', viewValue: 'Percent' }
-        ];
-      }
+  resetForm() {
+    this.keys.clear();
+    this.metricSelectionForm.reset();
+    this.options = [this.options[0]];
+    this.filteredOptions = [];
+    this.keys.push(this.addKeys());
+    this.ManageNameControl(0);
+    this.isKeySelected = false;
+  }
+
+  displayFn(node?: any): string | undefined {
+    return node ? node.key : undefined;
+  }
+
+  private _filter(key: any, index): any[] {
+    let filterValue;
+    if (typeof key === 'string') {
+      filterValue = key.toLowerCase();
     } else {
-      this.selectedKey = null;
-      this.selectedKeyMeta = null;
-    }
-  }
-
-  setTreeForMetric(index: number) {
-    this.selectedMetricIndex = index;
-    this.resetVariables();
-    this.insertNodeIndex = 0;
-    this.createTree([this.allMetrics.data[index]]);
-  }
-
-  findParents(node, searchForKey) {
-
-    // If current node name matches the search name, return
-    // empty array which is the beginning of our parent result
-    if (node.key === searchForKey) {
-      return [];
+      filterValue = key.key.toLowerCase();
     }
 
-    // Otherwise, if this node has a tree field/value, recursively
-    // process the nodes in this tree array
-    if (Array.isArray(node.children)) {
+    return this.options[index].filter(option => option.key.toLowerCase().indexOf(filterValue) === 0);
+  }
 
-      for (const treeNode of node.children) {
+  addMoreSelectKey() {
+    const controls = <FormArray>this.metricSelectionForm.controls['keys'];
+    const formGroup = this.addKeys();
+    controls.push(formGroup);
+    // Build the account Auto Complete values
+    this.ManageNameControl(controls.length - 1);
+  }
 
-        // Recursively process treeNode. If an array result is
-        // returned, then add the treeNode.key to that result
-        // and return recursively
-        const childResult = this.findParents(treeNode, searchForKey)
-
-        if (Array.isArray(childResult)) {
-          return [ treeNode.key ].concat( childResult );
+  selectedOption(event) {
+    if (event.option.value) {
+      if (event.option.value.children.length) {
+        this.addMoreSelectKey();
+      } else {
+        this.isKeySelected = true;
+        const controls = <FormArray>this.metricSelectionForm.controls['keys'];
+        controls.at(controls.length - 1).disable();
+        const { keys } = this.metricSelectionForm.getRawValue();
+        const leafNode = keys[keys.length - 1].metricKey.metadata;
+        if (leafNode && leafNode.type === 'continuous') {
+          this.queryOperations = [
+            { value: OPERATION_TYPES.SUM, viewValue: 'Sum' },
+            { value: OPERATION_TYPES.MIN, viewValue: 'Min' },
+            { value: OPERATION_TYPES.MAX, viewValue: 'Max' },
+            { value: OPERATION_TYPES.COUNT, viewValue: 'Count' },
+            { value: OPERATION_TYPES.AVERAGE, viewValue: 'Average' },
+            { value: OPERATION_TYPES.MODE, viewValue: 'Mode' },
+            { value: OPERATION_TYPES.MEDIAN, viewValue: 'Median' },
+            { value: OPERATION_TYPES.STDEV, viewValue: 'Standard Deviation' }
+          ];
+        } else if (leafNode && leafNode.type === 'categorical') {
+          this.queryOperations = [
+            { value: OPERATION_TYPES.COUNT, viewValue: 'Count' },
+            { value: 'percent', viewValue: 'Percent' }
+          ];
         }
       }
     }
   }
 
   saveQuery() {
-    const data = {
-      children: this.nestedDataSource.data
-    };
-    const key = this.findParents(data, this.selectedKey);
+    const { operationType, queryName, compareFn, compareValue } = this.metricSelectionForm.getRawValue();
+    let { keys } = this.metricSelectionForm.getRawValue();
+    keys = keys.map(key => key.metricKey.key);
     let queryObj: Query = {
-      name: this.queryName,
+      name: queryName,
       query: {
-        operationType: this.selectedOperation
+        operationType
       },
       metric: {
-        key: key.join(METRICS_JOIN_TEXT)
+        key: keys.join(METRICS_JOIN_TEXT)
       },
     };
-    if (this.compareFn) {
+    if (compareFn && !!compareValue) {
       queryObj = {
         ...queryObj,
         query: {
           ...queryObj.query,
-          compareFn: this.compareFn,
-          compareValue: this.compareValue
+          compareFn,
+          compareValue
         }
       }
     }
     this.experimentInfo.queries = [ ...this.experimentInfo.queries, queryObj];
     this.experimentService.updateExperiment(this.experimentInfo);
-    this.selectedMetricIndex = null;
-    this.resetVariables();
-  }
-
-  resetVariables() {
-    this.selectedKey = null;
-    this.selectedOperation = null;
-    this.queryName = null;
-    this.compareFn = null;
-    this.compareValue = null;
-    this.selectedKeyMeta = null;
   }
 
   ngOnDestroy() {
