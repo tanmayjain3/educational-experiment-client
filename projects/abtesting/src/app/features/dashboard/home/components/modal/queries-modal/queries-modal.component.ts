@@ -51,19 +51,15 @@ export class QueriesModalComponent implements OnInit, OnDestroy {
   applyFilter(filterValue?: string) {
     this.resetVariables();
     const searchValue = filterValue && filterValue.toLowerCase() || this.searchInput.toLowerCase();
-    if (this.createQueryMode) {
-      this.analysisService.setMetricsFilterValue(searchValue);
+    if (searchValue) {
+      this.experimentQueries = this.experimentInfo.queries.filter(query => {
+        const operationPipedValue = this.operationPipe.transform(query.query.operationType).toLowerCase();
+        return query.metric.key.toLowerCase().split(METRICS_JOIN_TEXT).join(' ').includes(searchValue)
+          || operationPipedValue.includes(searchValue)
+          || query.name.toLowerCase().includes(searchValue);
+      });
     } else {
-      if (searchValue) {
-        this.experimentQueries = this.experimentInfo.queries.filter(query => {
-          const operationPipedValue = this.operationPipe.transform(query.query.operationType).toLowerCase();
-          return query.metric.key.toLowerCase().split(METRICS_JOIN_TEXT).join(' ').includes(searchValue)
-            || operationPipedValue.includes(searchValue)
-            || query.name.toLowerCase().includes(searchValue);
-        });
-      } else {
-        this.experimentQueries = this.experimentInfo.queries;
-      }
+      this.experimentQueries = this.experimentInfo.queries;
     }
   }
 
