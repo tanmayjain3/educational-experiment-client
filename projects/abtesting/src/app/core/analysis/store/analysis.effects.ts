@@ -31,7 +31,7 @@ export class AnalysisEffects {
       filter(metrics => !!metrics),
       switchMap(metrics =>
         this.analysisDataService.upsertMetrics(metrics).pipe(
-          map((data: any) => AnalysisActions.actionUpsertMetricsSuccess({ metrics: data })),
+          map((data: any) => AnalysisActions.actionFetchMetrics()),
           catchError(() => [ AnalysisActions.actionUpsertMetricsFailure()])
         )
       )
