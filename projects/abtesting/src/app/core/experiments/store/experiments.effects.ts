@@ -9,7 +9,6 @@ import {
   Experiment,
   NUMBER_OF_EXPERIMENTS,
   ExperimentPaginationParams,
-  ExperimentGraphDateFilterOptions,
   IExperimentEnrollmentDetailStats
 } from './experiments.model';
 import { Router } from '@angular/router';
@@ -28,7 +27,6 @@ import {
 } from './experiments.selectors';
 import { combineLatest } from 'rxjs';
 import { saveAs } from 'file-saver';
-import { subDays, subMonths, addDays, startOfMonth, set } from 'date-fns';
 
 @Injectable()
 export class ExperimentEffects {
@@ -237,46 +235,31 @@ export class ExperimentEffects {
     )
   );
 
-  fetchGraphInfo$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(experimentAction.actionFetchExperimentGraphInfo),
-      map(action => ({ experimentId: action.experimentId, range: action.range })),
-      filter(({ experimentId, range }) => !!experimentId && !!range),
-      withLatestFrom(this.store$.pipe(select(selectExperimentGraphInfo))),
-      mergeMap(([{ experimentId, range }, graphData]) => {
-        if (!graphData) {
-          let params: any = {
-            experimentId,
-            toDate: new Date().toISOString()
-          };
-          const startDateOfCurrentMonth = addDays(startOfMonth(new Date()), 1);
-          let fromDate;
-          switch (range) {
-            case ExperimentGraphDateFilterOptions.LAST_7_DAYS:
-              fromDate = set(subDays(new Date(), 6), { hours: 0, minutes: 0, seconds: 0 });
-              break;
-            case ExperimentGraphDateFilterOptions.LAST_3_MONTHS:
-              fromDate = subMonths(startDateOfCurrentMonth, 2); // Subtract current Month so 3 - 1 = 2
-              break;
-            case ExperimentGraphDateFilterOptions.LAST_6_MONTHS:
-              fromDate = subMonths(startDateOfCurrentMonth, 5);
-              break;
-            case ExperimentGraphDateFilterOptions.LAST_12_MONTHS:
-              fromDate = subMonths(startDateOfCurrentMonth, 11);
-              break;
+  fetchGraphInfo$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(experimentAction.actionFetchExperimentGraphInfo),
+        map(action => ({ experimentId: action.experimentId, range: action.range})),
+        filter(({ experimentId, range }) => !!experimentId && !!range),
+        withLatestFrom(
+          this.store$.pipe(select(selectExperimentGraphInfo))
+        ),
+        mergeMap(([{ experimentId, range }, graphData]) => {
+          if (!graphData) {
+            const params = {
+              experimentId,
+              dateEnum: range
+            };
+            this.store$.dispatch(experimentAction.actionSetIsGraphLoading({ isGraphInfoLoading: true }));
+            return this.experimentDataService.fetchExperimentGraphInfo(params).pipe(
+              map((data: any) =>  experimentAction.actionFetchExperimentGraphInfoSuccess({ range, graphInfo: data.reverse() })),
+              catchError(() => [
+                experimentAction.actionFetchExperimentGraphInfoFailure(),
+                experimentAction.actionSetIsGraphLoading({ isGraphInfoLoading: false })
+              ])
+            )
           }
-          params = {
-            ...params,
-            fromDate: fromDate.toISOString()
-          };
-          return this.experimentDataService.fetchExperimentGraphInfo(params).pipe(
-            map((data: any) => {
-              return experimentAction.actionFetchExperimentGraphInfoSuccess({ range, graphInfo: data });
-            }),
-            catchError(() => [experimentAction.actionFetchExperimentGraphInfoFailure()])
-          );
-        }
-        return [];
+          return [];
       })
     )
   );

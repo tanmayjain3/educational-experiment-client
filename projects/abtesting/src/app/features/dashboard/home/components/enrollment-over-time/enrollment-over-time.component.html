@@ -66,8 +66,11 @@
         [(ngModel)]="selectedDateFilter"
         (selectionChange)="applyExperimentFilter(ExperimentFilter.DATE_FILTER)"
       >
-        <mat-option *ngFor="let dateFilterType of dateFilterOptions" [value]="dateFilterType">
-          {{ dateFilterType | titlecase }}
+        <mat-option
+          *ngFor="let dateFilterType of dateFilterOptions"
+          [value]="dateFilterType.value"
+        >
+          {{ dateFilterType.viewValue | titlecase }}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -95,20 +98,25 @@
           [yAxisTickFormatting]="formateYAxisLabel"
         >
         </ngx-charts-bar-vertical-stacked>
+        <div class="spinner" *ngIf="isGraphLoading$ | async">
+          <mat-spinner
+            diameter="60"
+          ></mat-spinner>
+        </div>
       </div>
 
       <div class="enrollment-statistic">
         <div class="enrollment-statistic__unique">
           <span class="ft-18-600 title">
-            {{ 'home.view-experiment.enrollment-over-time.unique-enrolled.text' | translate }}
+            {{ 'home.view-experiment.enrollment-over-time.total-marked-user.text' | translate }}
           </span>
-          <span class="ft-36-700 numbers">{{ uniqueEnrolled }}</span>
+          <span class="ft-36-700 numbers">{{ totalMarkedUsers }}</span>
         </div>
         <div class="enrollment-statistic__class" [ngClass]="{'group-enabled': selectedGroupFilter !== 'Individual'}">
           <span class="ft-18-600 title">
-            {{ 'home.view-experiment.enrollment-over-time.group-enrolled.text' | translate }}
+            {{ 'home.view-experiment.enrollment-over-time.total-marked-groups.text' | translate }}
           </span>
-          <span class="ft-36-700 numbers">{{ groupEnrolled }}</span>
+          <span class="ft-36-700 numbers">{{ totalMarkedGroups }}</span>
         </div>
       </div>
     </div>
