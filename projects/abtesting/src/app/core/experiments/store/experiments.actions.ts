@@ -7,9 +7,9 @@ import {
   EXPERIMENT_SEARCH_KEY,
   EXPERIMENT_SORT_KEY,
   EXPERIMENT_SORT_AS,
-  IExperimentDateStat,
   IExperimentEnrollmentDetailStats,
-  DATE_RANGE
+  DATE_RANGE,
+  IEnrollmentStatByDate
 } from './experiments.model';
 
 export const actionGetExperiments = createAction(
@@ -167,7 +167,7 @@ export const actionFetchExperimentGraphInfo = createAction(
 
 export const actionFetchExperimentGraphInfoSuccess = createAction(
   '[Experiment] Fetch Experiment graph Info Success',
-  props<{ range: DATE_RANGE, graphInfo: IExperimentDateStat[] }>()
+  props<{ range: DATE_RANGE, graphInfo: IEnrollmentStatByDate[] }>()
 );
 
 export const actionFetchExperimentGraphInfoFailure = createAction(
