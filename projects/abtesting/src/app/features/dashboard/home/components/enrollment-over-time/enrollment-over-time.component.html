@@ -8,8 +8,11 @@
         [(ngModel)]="selectedGroupFilter"
         (selectionChange)="applyExperimentFilter(ExperimentFilter.GROUP_FILTER)"
       >
-        <mat-option *ngFor="let groupValue of groupFiltersOptions" [value]="groupValue">
-          {{ groupValue | titlecase }}
+        <mat-option
+          *ngFor="let groupValue of groupFiltersOptions"
+          [value]="groupValue"
+        >
+          {{ groupValue }}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -32,7 +35,7 @@
           {{ 'home.view-experiment.graph-select-all.text' | translate }}
         </mat-checkbox>
         <mat-option *ngFor="let condition of conditionsFilterOptions" [value]="condition.id">
-          {{ condition.code | titlecase }}
+          {{ condition.code }}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -55,7 +58,7 @@
           {{ 'home.view-experiment.graph-select-all.text' | translate }}
         </mat-checkbox>
         <mat-option *ngFor="let partition of partitionsFilterOptions" [value]="partition.id">
-          {{ partition.point | titlecase }}
+          {{ partition.point }}
         </mat-option>
       </mat-select>
     </mat-form-field>
