@@ -176,7 +176,7 @@ export interface ExperimentState extends EntityState<Experiment> {
   isGraphInfoLoading: boolean;
   allPartitions: {};
   allExperimentNames: {};
-  context: string[]
+  context: string[];
 }
 
 export interface State extends AppState {

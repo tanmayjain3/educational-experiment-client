@@ -61,7 +61,12 @@
             {{ experiment.name }}
           </a>
           <ng-template #experimentNameEllipsis>
-            <a [routerLink]="['/home', 'detail', experiment.id]" [matTooltip]="experiment.name" class="experiment-name" matTooltipPosition="above">
+            <a
+              [routerLink]="['/home', 'detail', experiment.id]"
+              [matTooltip]="experiment.name"
+              class="experiment-name"
+              matTooltipPosition="above"
+            >
               {{ experiment.name | truncate: 30 }}
             </a>
           </ng-template>
@@ -93,15 +98,26 @@
         >
           <div class="experiment-state">
             <ng-container
-              *ngIf="experiment.state === ExperimentState.PREVIEW || experiment.state === ExperimentState.CANCELLED || experiment.state === ExperimentState.SCHEDULED; else experimentStateTemplate"
+              *ngIf="
+                experiment.state === ExperimentState.PREVIEW ||
+                  experiment.state === ExperimentState.CANCELLED ||
+                  experiment.state === ExperimentState.SCHEDULED;
+                else experimentStateTemplate
+              "
             >
               <app-shared-icons class="icons" [iconType]="experiment.state"></app-shared-icons>
             </ng-container>
             <ng-template #experimentStateTemplate>
-              <span class="experiment-state-circle" [ngStyle]="{'backgroundColor': experiment.state | experimentState: ExperimentStatePipeTypes.COLOR }"></span>
+              <span
+                class="experiment-state-circle"
+                [ngStyle]="{ backgroundColor: experiment.state | experimentState: ExperimentStatePipeTypes.COLOR }"
+              ></span>
             </ng-template>
             <span
-              [ngClass]="{'experiment-state--light': experiment.state === ExperimentState.INACTIVE || experiment.state === ExperimentState.CANCELLED }"
+              [ngClass]="{
+                'experiment-state--light':
+                  experiment.state === ExperimentState.INACTIVE || experiment.state === ExperimentState.CANCELLED
+              }"
             >
               {{ experiment.state | experimentState }}
             </span>
@@ -270,7 +286,6 @@
           </ng-template>
         </td>
       </ng-container>
-
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>

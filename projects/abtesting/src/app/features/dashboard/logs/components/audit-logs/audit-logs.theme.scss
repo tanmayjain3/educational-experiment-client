@@ -1,0 +1,21 @@
+@import '~@angular/material/theming';
+
+@mixin audit-logs-component-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  .logs {
+    .timeline-section {
+      box-shadow: 0 8px 8px -8px mat-color($background, shadow-color);
+
+      .error-date {
+        .date-info {
+          color: mat-color($foreground, text);
+        }
+      }
+    }
+  }
+}

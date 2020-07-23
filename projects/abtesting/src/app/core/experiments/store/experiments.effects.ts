@@ -274,8 +274,8 @@ export class ExperimentEffects {
             )
           }
           return [];
-        })
-      )
+      })
+    )
   );
 
   setExperimentGraphRange$ = createEffect(
@@ -292,7 +292,7 @@ export class ExperimentEffects {
           }
         })
       ),
-      { dispatch: false }
+    { dispatch: false }
   );
 
   navigateOnDeleteExperiment$ = createEffect(
