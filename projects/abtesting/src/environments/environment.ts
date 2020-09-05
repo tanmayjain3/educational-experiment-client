@@ -3,7 +3,8 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-const endpointApi = 'http://development-upgrade-experiment-app.eba-gp6psjut.us-east-1.elasticbeanstalk.com/api';
+// const endpointApi = 'http://development-upgrade-experiment-app.eba-gp6psjut.us-east-1.elasticbeanstalk.com/api';
+const endpointApi = 'http://localhost:3030/api';
 
 export const environment = {
   appName: 'UpGrade',
@@ -12,6 +13,7 @@ export const environment = {
   production: false,
   test: false,
   i18nPrefix: '',
+  appVersion: require('../../../../package.json').version,
   gapiClientId: '135765367152-pq4jhd3gra10jda9l6bpnmu9gqt48tup.apps.googleusercontent.com',
   domainName: 'playpowerlabs.com',
   api: {
@@ -44,6 +46,7 @@ export const environment = {
     setting: `${endpointApi}/setting`,
     metrics: `${endpointApi}/metric`,
     metricsSave: `${endpointApi}/metric/save`,
-    queryResult: `${endpointApi}/query/analyse`
+    queryResult: `${endpointApi}/query/analyse`,
+    getVersion: `${endpointApi}/version`
   }
 };
