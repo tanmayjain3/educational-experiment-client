@@ -19,7 +19,7 @@ const INDIVIDUAL = 'individual';
 @Component({
   selector: 'home-enrollment-over-time',
   templateUrl: './enrollment-over-time.component.html',
-  styleUrls: ['./enrollment-over-time.component.scss'],
+  styleUrls: ['./enrollment-over-time.component.scss']
 })
 export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy {
   @Input() experiment: ExperimentVM;
@@ -49,7 +49,7 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
   graphInfoSub: Subscription;
   isGraphLoading$ = this.experimentService.isGraphLoading$;
 
-  constructor(private experimentService: ExperimentService) { }
+  constructor(private experimentService: ExperimentService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.experiment) {
@@ -88,7 +88,7 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
   }
 
   formateYAxisLabel(value) {
-    return (value % 1 !== 0) ? '' : value;
+    return value % 1 !== 0 ? '' : value;
   }
 
   populateGraphData(graphData: any) {
@@ -162,9 +162,10 @@ export class EnrollmentOverTimeComponent implements OnChanges, OnInit, OnDestroy
   }
 
   getConditionCode(conditionId: string): string {
-    return this.experiment.conditions.reduce((acc, condition) =>
-      acc = condition.id === conditionId ? condition.conditionCode : acc
-      , '');
+    return this.experiment.conditions.reduce(
+      (acc, condition) => (acc = condition.id === conditionId ? condition.conditionCode : acc),
+      ''
+    );
   }
 
   // Used to form empty series data to keep graph bar width same different value of time filter

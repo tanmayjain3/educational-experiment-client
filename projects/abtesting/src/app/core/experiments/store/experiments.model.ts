@@ -40,6 +40,7 @@ export enum GroupTypes {
   CLASS = 'class',
   SCHOOL = 'school',
   DISTRICT = 'district',
+  TEACHER = 'teacher',
   OTHER = 'other'
 }
 
@@ -176,7 +177,7 @@ export interface ExperimentState extends EntityState<Experiment> {
   isGraphInfoLoading: boolean;
   allPartitions: {};
   allExperimentNames: {};
-  context: string[]
+  context: string[];
 }
 
 export interface State extends AppState {
