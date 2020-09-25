@@ -101,6 +101,30 @@
               </mat-expansion-panel>
             </mat-accordion>
           </div>
+
+          <div class="log-text" *ngSwitchCase="ExperimentLogType.EXPERIMENT_DATA_EXPORTED">
+            <mat-accordion class="accordion">
+              <mat-expansion-panel hideToggle="true">
+                <mat-expansion-panel-header class="expansion-header" expandedHeight="*" collapsedHeight="*">
+                  <mat-panel-title>
+                    <span class="ft-16-600 action-msg">
+                      {{ (log.type | experimentActionMessage | translate) + ' ' }}
+                      <a
+                        class="link"
+                        *ngIf="log.data.isExperimentExist; else experimentNotExist"
+                        [routerLink]="['/home', 'detail', log.data.experimentId]"
+                        >{{ log.data.experimentName }}</a
+                      ></span
+                    >
+                    <span class="ft-12-600 view-diff" [innerHTML]="'logs-global.log-view-diff.text' | translate"></span>
+                  </mat-panel-title>
+                  <span class="ft-16-400 log-time">{{ log.createdAt | date: 'shortTime' }}</span>
+                </mat-expansion-panel-header>
+
+                <pre><div class="ft-14-400 diff-container" [id]="log.id">{{ getHtmlFormedLogData(log.id, log.data.diff) }}</div></pre>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
         </ng-container>
 
         <ng-template #experimentNotExist>
