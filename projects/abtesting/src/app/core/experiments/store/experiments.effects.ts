@@ -129,10 +129,14 @@ export class ExperimentEffects {
         const experimentMethod =
           actionType === UpsertExperimentType.CREATE_NEW_EXPERIMENT
             ? this.experimentDataService.createNewExperiment(experiment)
+            : actionType === UpsertExperimentType.IMPORT_EXPERIMENT 
+            ? this.experimentDataService.importExperiment(experiment)
             : this.experimentDataService.updateExperiment(experiment);
         return experimentMethod.pipe(
           switchMap((data: Experiment) =>
-            this.experimentDataService.getAllExperimentsStats([data.id]).pipe(
+          {
+            console.log('tanmay in pipe', data);
+            return this.experimentDataService.getAllExperimentsStats([data.id]).pipe(
               switchMap((experimentStat: IExperimentEnrollmentStats) => {
                 const stats = { ...experimentStats, [data.id]: experimentStat[0] };
                 const queryIds = data.queries.map(query => query.id);
@@ -144,8 +148,11 @@ export class ExperimentEffects {
                 ];
               })
             )
+          }
           ),
-          catchError(() => [experimentAction.actionUpsertExperimentFailure()])
+          catchError((error) => {
+            console.log('tanmay', error)
+            return [experimentAction.actionUpsertExperimentFailure()]})
         );
       })
     )

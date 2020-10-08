@@ -1,0 +1,23 @@
+.dialog {
+  .name {
+    width: 100%;
+    line-height: 18px;
+
+    &-input {
+      line-height: 18px;
+      margin-bottom: 10px;
+    }
+  }
+
+  &-actions {
+    display: flex;
+    justify-content: flex-end !important;
+    width: 100%;
+    margin: 0;
+
+    .import-btn {
+      background-color: var(--blue) !important;
+    }
+  }
+}
+

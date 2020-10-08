@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './core/auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
+import * as papaparse from 'papaparse';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.translateService.setDefaultLang('en');
-    this.authService.initializeGapi();
+    this.authService.initializeGapi(); 
   }
 }
+

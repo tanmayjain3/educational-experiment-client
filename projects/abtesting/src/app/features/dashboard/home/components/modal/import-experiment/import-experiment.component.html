@@ -1,0 +1,27 @@
+<div mat-dialog-content class="dialog">
+  <p class="ft-16-600">
+    {{ 'home.import-experiment.message.text' | translate }}
+  </p>
+    <input
+      accept=".json"
+      type="file"
+      class="ft-14-400 name-input"
+      (change)="fileUploaded($event)"
+    />
+</div>
+<div mat-dialog-actions class="dialog-actions">
+  <button
+    class="modal-btn"
+    mat-flat-button
+    (click)="onCancelClick()"
+  >
+    {{ 'global.cancel.text' | translate }}
+  </button>
+  <button
+    class="modal-btn default-button import-btn"
+    mat-flat-button
+    (click)="importExperiment()"
+  >
+    {{ 'global.import.text' | translate }}
+  </button>
+</div>

@@ -25,6 +25,16 @@
       </mat-form-field>
     </div>
     <button
+      (click)="openImportExperimentDialog()"
+      mat-flat-button
+      color="primary"
+      class="ft-14-700 import-experiment"
+      *ngIf="(permissions$ | async)?.experiments.create"
+    >
+      <mat-icon>add</mat-icon>
+      <span>{{ 'home.experiment.import-experiment.text' | translate }}</span>
+    </button>
+    <button
       mat-flat-button
       color="primary"
       class="ft-14-700"
