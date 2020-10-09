@@ -133,10 +133,7 @@ export class ExperimentEffects {
             ? this.experimentDataService.importExperiment(experiment)
             : this.experimentDataService.updateExperiment(experiment);
         return experimentMethod.pipe(
-          switchMap((data: Experiment) =>
-          {
-            console.log('tanmay in pipe', data);
-            return this.experimentDataService.getAllExperimentsStats([data.id]).pipe(
+          switchMap((data: Experiment) => this.experimentDataService.getAllExperimentsStats([data.id]).pipe(
               switchMap((experimentStat: IExperimentEnrollmentStats) => {
                 const stats = { ...experimentStats, [data.id]: experimentStat[0] };
                 const queryIds = data.queries.map(query => query.id);
@@ -148,11 +145,9 @@ export class ExperimentEffects {
                 ];
               })
             )
-          }
+          
           ),
-          catchError((error) => {
-            console.log('tanmay', error)
-            return [experimentAction.actionUpsertExperimentFailure()]})
+          catchError((error) => [experimentAction.actionUpsertExperimentFailure()])
         );
       })
     )
